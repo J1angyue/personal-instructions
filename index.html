@@ -1,13 +1,70 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="zh-CN">
   <head>
     <meta charset="UTF-8" />
+    <style>
+      html,
+      body {
+        margin: 0;
+        height: 100%;
+        overflow: hidden;
+        background-color: black;
+      }
+    </style>
     <link rel="icon" type="image/svg+xml" href="/vite.svg" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
-    <title>Vite + Vue</title>
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, user-scalable=no"
+    />
+    <title>马振轩的使用说明书</title>
   </head>
   <body>
+    <div id="loading" class="position-centered">场景世界生成中…</div>
     <div id="background"></div>
+    <div id="swiper" class="swiper">
+      <div class="swiper-wrapper">
+        <div class="swiper-slide">
+          <div class="content position-centered">
+            <h1 class="whitespace-nowrap">关于我</h1>
+            <ul>
+              <li>
+                <div>姓名是 马振轩</div>
+                <div class="text-size-12px">（综管的伙伴们都叫我 轩轩）</div>
+              </li>
+              <li>部门是 综合管理部</li>
+              <li>
+                <div>岗位是 IT 专员</div>
+                <div class="text-size-12px whitespace-nowrap">
+                  （其实我是一名有才华但不横溢的 <strong>前端工程师</strong>）
+                </div>
+              </li>
+            </ul>
+          </div>
+        </div>
+        <div class="swiper-slide">
+          <div class="content position-centered">
+            <h1 class="whitespace-nowrap">我能做什么</h1>
+            <ul>
+              <li>前端开发 JS、Node、Vue、Webpack、Vite、Nginx、Jenkins…</li>
+              <li>制作基于网页的、安卓或苹果的小工具、小程序</li>
+              <li>充当义务劳动力</li>
+              <li><span class="text-size-12px">协助拍摄、录像</span></li>
+            </ul>
+          </div>
+        </div>
+        <div class="swiper-slide">
+          <div class="content position-centered">
+            <h1 class="whitespace-nowrap">与我协作</h1>
+            <ul>
+              <li>应当使用命令的语气，尽量不要使用“请、能不能”等词语</li>
+              <li>应当直接告诉我何时何地做何事、最终何时交付</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+      <div class="swiper-button-prev"></div>
+      <div class="swiper-button-next"></div>
+    </div>
     <script type="module" src="/src/main.js"></script>
   </body>
 </html>

@@ -173,9 +173,8 @@ export default class App {
       -(options.roadWidth + options.islandWidth / 2)
     );
 
-    this.container.addEventListener("mousedown", this.onMouseDown);
-    this.container.addEventListener("mouseup", this.onMouseUp);
-    this.container.addEventListener("mouseout", this.onMouseUp);
+    document.body.addEventListener("touchstart", this.onMouseDown);
+    document.body.addEventListener("touchend", this.onMouseUp);
 
     this.tick();
   }
