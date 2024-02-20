@@ -1,4 +1,11 @@
-import { EffectComposer, RenderPass, EffectPass, BloomEffect, SMAAEffect, SMAAPreset } from "postprocessing";
+import {
+  EffectComposer,
+  RenderPass,
+  EffectPass,
+  BloomEffect,
+  SMAAEffect,
+  SMAAPreset,
+} from "postprocessing";
 import {
   WebGLRenderer,
   PerspectiveCamera,
@@ -18,7 +25,7 @@ import {
   ShaderMaterial,
   ShaderChunk,
   PlaneBufferGeometry,
-  DoubleSide
+  DoubleSide,
 } from "three";
 
 export default class App {
@@ -29,14 +36,14 @@ export default class App {
     if (this.options.distortion == null) {
       this.options.distortion = {
         uniforms: distortion_uniforms,
-        getDistortion: distortion_vertex
+        getDistortion: distortion_vertex,
       };
     }
     this.container = container;
     this.renderer = new WebGLRenderer({
-      antialias: false
+      antialias: false,
     });
-    this.renderer.setSize(container.offsetWidth, container.offsetHeight, false);
+    this.renderer.setSize(container.offsetWidth, container.offsetHeight, true);
     this.renderer.setPixelRatio(window.devicePixelRatio);
     this.composer = new EffectComposer(this.renderer);
     container.append(this.renderer.domElement);
@@ -62,7 +69,7 @@ export default class App {
     this.fogUniforms = {
       fogColor: { type: "c", value: fog.color },
       fogNear: { type: "f", value: fog.near },
-      fogFar: { type: "f", value: fog.far }
+      fogFar: { type: "f", value: fog.far },
     };
     this.clock = new Clock();
     this.assets = {};
@@ -106,7 +113,7 @@ export default class App {
       new BloomEffect({
         luminanceThreshold: 0.2,
         luminanceSmoothing: 0,
-        resolutionScale: 1
+        resolutionScale: 1,
       })
     );
     const smaaPass = new EffectPass(
@@ -132,12 +139,12 @@ export default class App {
       const searchImage = new Image();
       const areaImage = new Image();
       assets.smaa = {};
-      searchImage.addEventListener("load", function() {
+      searchImage.addEventListener("load", function () {
         assets.smaa.search = this;
         manager.itemEnd("smaa-search");
       });
 
-      areaImage.addEventListener("load", function() {
+      areaImage.addEventListener("load", function () {
         assets.smaa.area = this;
         manager.itemEnd("smaa-area");
       });
@@ -234,8 +241,13 @@ export default class App {
   }
   tick() {
     if (this.disposed || !this) return;
-    if (resizeRendererToDisplaySize(this.renderer, this.setSize)) {
+    if (resizeRendererToDisplaySize(this.container, this.renderer.domElement)) {
       const canvas = this.renderer.domElement;
+      this.setSize(
+        this.container.clientWidth,
+        this.container.clientHeight,
+        true
+      );
       this.camera.aspect = canvas.clientWidth / canvas.clientHeight;
       this.camera.updateProjectionMatrix();
     }
@@ -248,7 +260,7 @@ export default class App {
 
 const distortion_uniforms = {
   uDistortionX: new Uniform(new Vector2(80, 3)),
-  uDistortionY: new Uniform(new Vector2(-40, 2.5))
+  uDistortionY: new Uniform(new Vector2(-40, 2.5)),
 };
 
 const distortion_vertex = `
@@ -273,11 +285,11 @@ const distortion_vertex = `
     }
 `;
 
-const random = base => {
+const random = (base) => {
   if (Array.isArray(base)) return Math.random() * (base[1] - base[0]) + base[0];
   return Math.random() * base;
 };
-const pickRandom = arr => {
+const pickRandom = (arr) => {
   if (Array.isArray(arr)) return arr[Math.floor(Math.random() * arr.length)];
   return arr;
 };
@@ -299,10 +311,7 @@ class CarLights {
   init() {
     const options = this.options;
     // Curve with length 1
-    let curve = new LineCurve3(
-      new Vector3(0, 0, 0),
-      new Vector3(0, 0, -1)
-    );
+    let curve = new LineCurve3(new Vector3(0, 0, 0), new Vector3(0, 0, -1));
     // Tube with radius = 1
     let geometry = new TubeBufferGeometry(curve, 40, 1, 8, false);
 
@@ -317,7 +326,7 @@ class CarLights {
 
     let colors = this.colors;
     if (Array.isArray(colors)) {
-      colors = colors.map(c => new Color(c));
+      colors = colors.map((c) => new Color(c));
     } else {
       colors = new Color(colors);
     }
@@ -385,13 +394,13 @@ class CarLights {
         {
           uTime: new Uniform(0),
           uTravelLength: new Uniform(options.length),
-          uFade: new Uniform(this.fade)
+          uFade: new Uniform(this.fade),
         },
         this.webgl.fogUniforms,
         options.distortion.uniforms
-      )
+      ),
     });
-    material.onBeforeCompile = shader => {
+    material.onBeforeCompile = (shader) => {
       shader.vertexShader = shader.vertexShader.replace(
         "#include <getDistortion_vertex>",
         options.distortion.getDistortion
@@ -487,7 +496,7 @@ class LightsSticks {
 
     let colors = options.colors.sticks;
     if (Array.isArray(colors)) {
-      colors = colors.map(c => new Color(c));
+      colors = colors.map((c) => new Color(c));
     } else {
       colors = new Color(colors);
     }
@@ -525,14 +534,14 @@ class LightsSticks {
       uniforms: Object.assign(
         {
           uTravelLength: new Uniform(options.length),
-          uTime: new Uniform(0)
+          uTime: new Uniform(0),
         },
         this.webgl.fogUniforms,
         options.distortion.uniforms
-      )
+      ),
     });
 
-    material.onBeforeCompile = shader => {
+    material.onBeforeCompile = (shader) => {
       shader.vertexShader = shader.vertexShader.replace(
         "#include <getDistortion_vertex>",
         options.distortion.getDistortion
@@ -636,14 +645,12 @@ class Road {
           isRoad ? options.colors.roadColor : options.colors.islandColor
         )
       ),
-      uTime: this.uTime
+      uTime: this.uTime,
     };
     if (isRoad) {
       uniforms = Object.assign(uniforms, {
         uLanes: new Uniform(options.lanesPerRoad),
-        uBrokenLinesColor: new Uniform(
-          new Color(options.colors.brokenLines)
-        ),
+        uBrokenLinesColor: new Uniform(new Color(options.colors.brokenLines)),
         uShoulderLinesColor: new Uniform(
           new Color(options.colors.shoulderLines)
         ),
@@ -655,7 +662,7 @@ class Road {
         ),
         uBrokenLinesWidthPercentage: new Uniform(
           options.brokenLinesWidthPercentage
-        )
+        ),
       });
     }
     const material = new ShaderMaterial({
@@ -666,10 +673,10 @@ class Road {
         uniforms,
         this.webgl.fogUniforms,
         options.distortion.uniforms
-      )
+      ),
     });
 
-    material.onBeforeCompile = shader => {
+    material.onBeforeCompile = (shader) => {
       shader.vertexShader = shader.vertexShader.replace(
         "#include <getDistortion_vertex>",
         options.distortion.getDistortion
@@ -782,13 +789,9 @@ void main() {
   ${ShaderChunk["fog_vertex"]}
 }`;
 
-function resizeRendererToDisplaySize(renderer, setSize) {
-  const canvas = renderer.domElement;
-  const width = canvas.clientWidth;
-  const height = canvas.clientHeight;
-  const needResize = canvas.width !== width || canvas.height !== height;
-  if (needResize) {
-    setSize(width, height, false);
-  }
-  return needResize;
+function resizeRendererToDisplaySize(container, canvas) {
+  return (
+    canvas.clientWidth !== container.clientWidth ||
+    canvas.clientHeight !== container.clientHeight
+  );
 }
